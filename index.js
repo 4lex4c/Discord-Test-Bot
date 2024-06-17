@@ -43,6 +43,29 @@ for (const folder of commandFolders) {
     }
 }
 
+// Evento que ejecuta el código cuando el cliente reciba una interacción 
+client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isChatInputCommand()) return;
+
+    const command = interaction.client.commands.get(interaction.commandName);
+
+    if (!command) {
+        console.error(`No se encontró ningún comando que coincida con ${interaction.commandName}`);
+        return;
+    }
+    
+    try {
+        await command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({ content: 'Hubo un error mientras se ejecutaba el comando', ephemeral: true });
+        } else {
+            await interaction.reply({ content: 'Hubo un error mientras se ejecutaba el comando', ephemeral: true });
+        }
+    }
+});
+
 // Cuando el cliente (bot) esté listo, se ejecuta este código sólo una vez (once).
 // Imprime en la consola un mensaje avisando que el cliente está listo para operar y conectado correctamente a Discord.
 client.once(Events.ClientReady, readyClient => {

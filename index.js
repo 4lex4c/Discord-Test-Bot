@@ -14,3 +14,5 @@ client.commands = new Collection();
 client.once(Events.ClientReady, readyClient => {
     console.log(`Conectado a Discord y listo para operar, soy ${readyClient.user.username}`);
 });
+
+client.login(token);
